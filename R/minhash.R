@@ -42,7 +42,10 @@ minhash_generator <- function(n = 200, seed = NULL) {
   r <- random_ints(n)
   f <- function(x) {
     assert_that(is.character(x))
-    h <- hash_string(x)
+    h <- sapply(x, function(s){
+                    d <- substr(digest(s, algo = "murmur32", serialize=FALSE),1,7)
+                    strtoi(d, base = 16)
+                })
     vapply(r, function(i) { min(bitwXor(h, i)) },
            integer(1), USE.NAMES = FALSE)
   }
